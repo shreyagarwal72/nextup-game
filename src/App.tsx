@@ -9,6 +9,11 @@ import TicTacToe from "./pages/TicTacToe";
 import MemoryGame from "./pages/MemoryGame";
 import RockPaperScissors from "./pages/RockPaperScissors";
 import TetrisGame from "./pages/TetrisGame";
+import QuizGame from "./pages/QuizGame";
+import HideSeekGame from "./pages/HideSeekGame";
+import RopeBridgeGame from "./pages/RopeBridgeGame";
+import ReactionTestGame from "./pages/ReactionTestGame";
+import CrossRoadGame from "./pages/CrossRoadGame";
 import Leaderboard from "./pages/Leaderboard";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
@@ -29,6 +34,11 @@ const App = () => (
           <Route path="/tictactoe" element={<TicTacToe />} />
           <Route path="/memory" element={<MemoryGame />} />
           <Route path="/rps" element={<RockPaperScissors />} />
+          <Route path="/quiz" element={<QuizGame />} />
+          <Route path="/hideseek" element={<HideSeekGame />} />
+          <Route path="/ropebridge" element={<RopeBridgeGame />} />
+          <Route path="/reaction" element={<ReactionTestGame />} />
+          <Route path="/crossroad" element={<CrossRoadGame />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />

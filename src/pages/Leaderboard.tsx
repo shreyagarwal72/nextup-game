@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Award, Crown, Zap, Brain, Target, Puzzle, Dices } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getLeaderboard, getPlayerData } from "@/utils/gameStorage";
+import { getLeaderboard, getUserData } from "@/utils/gameStorage";
 
 const leaderboardData = [
   {
@@ -132,7 +132,7 @@ export default function Leaderboard() {
                 leaderboard.slice(0, 10).map((player, index) => (
                   <div
                     key={index}
-                    className={`flex items-center justify-between p-4 bg-gaming-darker rounded-lg hover:bg-gaming-accent/10 transition-colors duration-300 ${player.username === playerData.username ? 'ring-2 ring-gaming-accent' : ''}`}
+                    className={`flex items-center justify-between p-4 bg-gaming-darker rounded-lg hover:bg-gaming-accent/10 transition-colors duration-300 ${player.playerName === playerData.username ? 'ring-2 ring-gaming-accent' : ''}`}
                   >
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
@@ -140,14 +140,14 @@ export default function Leaderboard() {
                         <span className="text-2xl font-bold text-gaming-accent">#{index + 1}</span>
                       </div>
                       <div>
-                        <div className="font-semibold text-foreground">{player.username}</div>
-                        <div className="text-sm text-muted-foreground">{player.gamesPlayed} games played</div>
+                        <div className="font-semibold text-foreground">{player.playerName}</div>
+                        <div className="text-sm text-muted-foreground">Recent score: {player.score}</div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-xl font-bold text-gaming-accent">{player.totalScore.toLocaleString()}</div>
+                      <div className="text-xl font-bold text-gaming-accent">{player.score.toLocaleString()}</div>
                       <Badge className="bg-gaming-accent text-white">
-                        {player.totalScore > 10000 ? "Champion" : player.totalScore > 5000 ? "Pro" : "Player"}
+                        {player.score > 10000 ? "Champion" : player.score > 5000 ? "Pro" : "Player"}
                       </Badge>
                     </div>
                   </div>
