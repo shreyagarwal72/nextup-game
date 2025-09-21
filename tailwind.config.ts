@@ -47,16 +47,25 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+        // Gaming Theme Colors
+        gaming: {
+          dark: "hsl(var(--gaming-dark))",
+          darker: "hsl(var(--gaming-darker))",
+          card: "hsl(var(--gaming-card))",
+          accent: "hsl(var(--gaming-accent))",
+          "accent-hover": "hsl(var(--gaming-accent-hover))",
+          "accent-glow": "hsl(var(--gaming-accent-glow))",
         },
+      },
+      backgroundImage: {
+        "gradient-gaming": "var(--gradient-gaming)",
+        "gradient-gaming-dark": "var(--gradient-gaming-dark)",
+        "gradient-hero": "var(--gradient-hero)",
+      },
+      boxShadow: {
+        "gaming": "var(--shadow-gaming)",
+        "gaming-hover": "var(--shadow-gaming-hover)",
+        "gaming-card": "var(--shadow-card)",
       },
       borderRadius: {
         lg: "var(--radius)",
