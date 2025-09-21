@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 import GameLayout from "@/components/GameLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Play, Pause, RotateCcw, Trophy } from "lucide-react";
+import { Play, Pause, RotateCcw, Trophy, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
+import { gameAudio } from "@/utils/gameAudio";
+import { updateScore } from "@/utils/gameStorage";
 
 type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
 type Position = { x: number; y: number };
@@ -31,12 +33,18 @@ export default function SnakeGame() {
   }, []);
 
   const resetGame = () => {
+    gameAudio.stopBackgroundMusic();
     setSnake(INITIAL_SNAKE);
     setFood(INITIAL_FOOD);
     setDirection("RIGHT");
     setScore(0);
     setGameOver(false);
     setIsPlaying(false);
+  };
+
+  const startGame = () => {
+    setIsPlaying(true);
+    gameAudio.playBackgroundMusic();
   };
 
   const moveSnake = useCallback(() => {
@@ -63,15 +71,21 @@ export default function SnakeGame() {
 
       // Check wall collision
       if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+        gameAudio.playSound('gameOver');
+        gameAudio.stopBackgroundMusic();
         setGameOver(true);
         setIsPlaying(false);
+        updateScore('snake', score);
         return prevSnake;
       }
 
       // Check self collision
       if (newSnake.some((segment) => segment.x === head.x && segment.y === head.y)) {
+        gameAudio.playSound('gameOver');
+        gameAudio.stopBackgroundMusic();
         setGameOver(true);
         setIsPlaying(false);
+        updateScore('snake', score);
         return prevSnake;
       }
 
@@ -79,6 +93,7 @@ export default function SnakeGame() {
 
       // Check food collision
       if (head.x === food.x && head.y === food.y) {
+        gameAudio.playSound('score');
         setScore((prev) => {
           const newScore = prev + 10;
           if (newScore > highScore) {
@@ -108,22 +123,35 @@ export default function SnakeGame() {
       switch (e.key) {
         case "ArrowUp":
         case "w":
-          if (direction !== "DOWN") setDirection("UP");
+          if (direction !== "DOWN") {
+            setDirection("UP");
+            gameAudio.playSound('move');
+          }
           break;
         case "ArrowDown":
         case "s":
-          if (direction !== "UP") setDirection("DOWN");
+          if (direction !== "UP") {
+            setDirection("DOWN");
+            gameAudio.playSound('move');
+          }
           break;
         case "ArrowLeft":
         case "a":
-          if (direction !== "RIGHT") setDirection("LEFT");
+          if (direction !== "RIGHT") {
+            setDirection("LEFT");
+            gameAudio.playSound('move');
+          }
           break;
         case "ArrowRight":
         case "d":
-          if (direction !== "LEFT") setDirection("RIGHT");
+          if (direction !== "LEFT") {
+            setDirection("RIGHT");
+            gameAudio.playSound('move');
+          }
           break;
         case " ":
           e.preventDefault();
+          gameAudio.playSound('click');
           setIsPlaying((prev) => !prev);
           break;
       }
@@ -168,7 +196,7 @@ export default function SnakeGame() {
         <Card className="bg-gaming-card border-gaming-accent/20">
           <CardContent className="p-6">
             <div
-              className="grid gap-1 mx-auto bg-gaming-darker p-4 rounded-lg"
+              className="grid gap-1 mx-auto bg-gaming-darker p-4 rounded-lg relative"
               style={{
                 gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
                 width: "min(500px, 90vw)",
@@ -202,23 +230,99 @@ export default function SnakeGame() {
         </Card>
 
         {/* Controls */}
-        <div className="flex justify-center gap-4">
-          <Button
-            onClick={() => setIsPlaying(!isPlaying)}
-            disabled={gameOver}
-            className="bg-gaming-accent hover:bg-gaming-accent-hover text-gaming-card"
-          >
-            {isPlaying ? <Pause className="h-5 w-5 mr-2" /> : <Play className="h-5 w-5 mr-2" />}
-            {isPlaying ? "Pause" : "Play"}
-          </Button>
-          <Button
-            onClick={resetGame}
-            variant="outline"
-            className="border-gaming-accent text-gaming-accent hover:bg-gaming-accent hover:text-gaming-card"
-          >
-            <RotateCcw className="h-5 w-5 mr-2" />
-            Reset
-          </Button>
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-center gap-4">
+            <Button
+              onClick={() => {
+                gameAudio.playSound('click');
+                if (!isPlaying && !gameOver) {
+                  startGame();
+                } else {
+                  setIsPlaying(!isPlaying);
+                }
+              }}
+              disabled={gameOver}
+              className="bg-gaming-accent hover:bg-gaming-accent-hover text-gaming-card"
+            >
+              {isPlaying ? <Pause className="h-5 w-5 mr-2" /> : <Play className="h-5 w-5 mr-2" />}
+              {isPlaying ? "Pause" : "Play"}
+            </Button>
+            <Button
+              onClick={() => {
+                gameAudio.playSound('click');
+                resetGame();
+              }}
+              variant="outline"
+              className="border-gaming-accent text-gaming-accent hover:bg-gaming-accent hover:text-gaming-card"
+            >
+              <RotateCcw className="h-5 w-5 mr-2" />
+              Reset
+            </Button>
+          </div>
+
+          {/* Mobile Controls */}
+          <div className="md:hidden">
+            <div className="flex flex-col items-center gap-2">
+              <Button
+                onClick={() => {
+                  if (direction !== "DOWN") {
+                    setDirection("UP");
+                    gameAudio.playSound('move');
+                  }
+                }}
+                variant="outline"
+                size="sm"
+                className="border-gaming-accent text-gaming-accent"
+                disabled={!isPlaying}
+              >
+                <ArrowUp className="h-4 w-4" />
+              </Button>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => {
+                    if (direction !== "RIGHT") {
+                      setDirection("LEFT");
+                      gameAudio.playSound('move');
+                    }
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="border-gaming-accent text-gaming-accent"
+                  disabled={!isPlaying}
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  onClick={() => {
+                    if (direction !== "LEFT") {
+                      setDirection("RIGHT");
+                      gameAudio.playSound('move');
+                    }
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="border-gaming-accent text-gaming-accent"
+                  disabled={!isPlaying}
+                >
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+              <Button
+                onClick={() => {
+                  if (direction !== "UP") {
+                    setDirection("DOWN");
+                    gameAudio.playSound('move');
+                  }
+                }}
+                variant="outline"
+                size="sm"
+                className="border-gaming-accent text-gaming-accent"
+                disabled={!isPlaying}
+              >
+                <ArrowDown className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Game Over Modal */}
@@ -237,29 +341,32 @@ export default function SnakeGame() {
                   <div className="text-gaming-accent font-semibold">🎉 New High Score!</div>
                 )}
               </div>
-              <Button
-                onClick={resetGame}
-                className="bg-gaming-accent hover:bg-gaming-accent-hover text-gaming-card"
-              >
-                Play Again
-              </Button>
+                <Button
+                  onClick={() => {
+                    gameAudio.playSound('click');
+                    resetGame();
+                  }}
+                  className="bg-gaming-accent hover:bg-gaming-accent-hover text-gaming-card"
+                >
+                  Play Again
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Instructions */}
+          <Card className="bg-gaming-card border-gaming-accent/20">
+            <CardHeader>
+              <CardTitle className="text-gaming-accent">How to Play</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 text-muted-foreground">
+              <p>• Use arrow keys, WASD, or mobile controls to move</p>
+              <p>• Eat the red food to grow and increase your score</p>
+              <p>• Avoid hitting the walls or yourself</p>
+              <p>• Press spacebar to pause/resume the game</p>
             </CardContent>
           </Card>
-        )}
-
-        {/* Instructions */}
-        <Card className="bg-gaming-card border-gaming-accent/20">
-          <CardHeader>
-            <CardTitle className="text-gaming-accent">How to Play</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-muted-foreground">
-            <p>• Use arrow keys or WASD to control the snake</p>
-            <p>• Eat the red food to grow and increase your score</p>
-            <p>• Avoid hitting the walls or yourself</p>
-            <p>• Press spacebar to pause/resume the game</p>
-          </CardContent>
-        </Card>
-      </div>
+        </div>
     </GameLayout>
   );
 }

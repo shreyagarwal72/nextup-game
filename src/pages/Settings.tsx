@@ -14,13 +14,18 @@ import {
   Shield, 
   Bell,
   Palette,
-  Save
+  Save,
+  Moon,
+  Sun
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "@/contexts/ThemeContext";
+import { gameAudio } from "@/utils/gameAudio";
 
 export default function Settings() {
   const { toast } = useToast();
+  const { theme, toggleTheme } = useTheme();
   const [settings, setSettings] = useState({
     // Audio Settings
     masterVolume: [70],
@@ -56,12 +61,25 @@ export default function Settings() {
   });
 
   const updateSetting = (key: string, value: any) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+    setSettings(prev => {
+      const newSettings = { ...prev, [key]: value };
+      gameAudio.updateSettings(newSettings);
+      return newSettings;
+    });
   };
 
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('gameSettings');
+    if (savedSettings) {
+      const parsed = JSON.parse(savedSettings);
+      setSettings(parsed);
+      gameAudio.updateSettings(parsed);
+    }
+  }, []);
+
   const saveSettings = () => {
-    // In a real app, this would save to backend/localStorage
     localStorage.setItem('gameSettings', JSON.stringify(settings));
+    gameAudio.updateSettings(settings);
     toast({
       title: "Settings Saved",
       description: "Your preferences have been updated successfully.",
@@ -174,21 +192,29 @@ export default function Settings() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label className="text-foreground mb-3 block">Theme</Label>
-                <Select value={settings.theme} onValueChange={(value) => updateSetting('theme', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select theme" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="dark">Dark Mode</SelectItem>
-                    <SelectItem value="light">Light Mode</SelectItem>
-                    <SelectItem value="auto">Auto</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
               <div className="space-y-4">
+                <div>
+                  <Label className="text-foreground mb-3 block">Theme</Label>
+                  <div className="flex items-center gap-4">
+                    <Button
+                      variant={theme === "dark" ? "default" : "outline"}
+                      onClick={() => theme === "light" && toggleTheme()}
+                      className="flex items-center gap-2"
+                    >
+                      <Moon className="h-4 w-4" />
+                      Dark
+                    </Button>
+                    <Button
+                      variant={theme === "light" ? "default" : "outline"}
+                      onClick={() => theme === "dark" && toggleTheme()}
+                      className="flex items-center gap-2"
+                    >
+                      <Sun className="h-4 w-4" />
+                      Light
+                    </Button>
+                  </div>
+                </div>
+                
                 <div className="flex items-center justify-between">
                   <Label className="text-foreground">Animations</Label>
                   <Switch

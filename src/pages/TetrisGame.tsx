@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 import GameLayout from "@/components/GameLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Play, Pause, RotateCcw, Trophy } from "lucide-react";
+import { Play, Pause, RotateCcw, Trophy, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, RotateCw } from "lucide-react";
+import { gameAudio } from "@/utils/gameAudio";
+import { updateScore } from "@/utils/gameStorage";
 
 type Cell = 0 | 1;
 type Board = Cell[][];
@@ -105,6 +107,7 @@ export default function TetrisGame() {
   };
 
   const resetGame = () => {
+    gameAudio.stopBackgroundMusic();
     setBoard(Array(BOARD_HEIGHT).fill(null).map(() => Array(BOARD_WIDTH).fill(0)));
     setCurrentPiece(null);
     setNextPiece(null);
@@ -122,6 +125,7 @@ export default function TetrisGame() {
     setCurrentPiece(piece);
     setNextPiece(next);
     setIsPlaying(true);
+    gameAudio.playBackgroundMusic();
   };
 
   const movePiece = useCallback((direction: 'left' | 'right' | 'down' | 'rotate') => {
@@ -146,10 +150,19 @@ export default function TetrisGame() {
 
     if (isValidMove(newPiece, board)) {
       setCurrentPiece(newPiece);
+      if (direction === 'rotate') {
+        gameAudio.playSound('rotate');
+      } else if (direction !== 'down') {
+        gameAudio.playSound('move');
+      }
     } else if (direction === 'down') {
       // Piece can't move down, place it
       const newBoard = placePiece(currentPiece, board);
       const { newBoard: clearedBoard, linesCleared } = clearLines(newBoard);
+      
+      if (linesCleared > 0) {
+        gameAudio.playSound('line');
+      }
       
       setBoard(clearedBoard);
       setLines(prev => prev + linesCleared);
@@ -164,6 +177,9 @@ export default function TetrisGame() {
         setCurrentPiece(nextPieceToUse);
         setNextPiece(newNextPiece);
       } else {
+        gameAudio.playSound('gameOver');
+        gameAudio.stopBackgroundMusic();
+        updateScore('tetris', score);
         setGameOver(true);
         setIsPlaying(false);
       }
@@ -314,16 +330,21 @@ export default function TetrisGame() {
                 className="grid gap-1 mx-auto bg-gaming-darker p-4 rounded-lg"
                 style={{ 
                   gridTemplateColumns: `repeat(${BOARD_WIDTH}, 1fr)`,
-                  width: 'fit-content'
+                  width: 'min(300px, 80vw)',
+                  height: 'min(600px, 60vh)'
                 }}
               >
                 {renderBoard().map((row, y) =>
                   row.map((cell, x) => (
                     <div
                       key={`${y}-${x}`}
-                      className={`w-6 h-6 rounded-sm ${
+                      className={`aspect-square rounded-sm transition-all ${
                         cell ? 'bg-gaming-accent' : 'bg-gaming-card/50'
                       }`}
+                      style={{
+                        width: 'min(20px, 3vw)',
+                        height: 'min(20px, 3vw)'
+                      }}
                     />
                   ))
                 )}
@@ -337,7 +358,10 @@ export default function TetrisGame() {
               <CardContent className="p-6 space-y-4">
                 {!isPlaying && !gameOver && (
                   <Button
-                    onClick={startGame}
+                    onClick={() => {
+                      gameAudio.playSound('click');
+                      startGame();
+                    }}
                     className="w-full bg-gaming-accent hover:bg-gaming-accent-hover text-gaming-card"
                   >
                     <Play className="h-5 w-5 mr-2" />
@@ -347,7 +371,10 @@ export default function TetrisGame() {
                 
                 {isPlaying && (
                   <Button
-                    onClick={() => setIsPlaying(false)}
+                    onClick={() => {
+                      gameAudio.playSound('click');
+                      setIsPlaying(false);
+                    }}
                     className="w-full bg-gaming-accent hover:bg-gaming-accent-hover text-gaming-card"
                   >
                     <Pause className="h-5 w-5 mr-2" />
@@ -357,7 +384,10 @@ export default function TetrisGame() {
                 
                 {!isPlaying && currentPiece && !gameOver && (
                   <Button
-                    onClick={() => setIsPlaying(true)}
+                    onClick={() => {
+                      gameAudio.playSound('click');
+                      setIsPlaying(true);
+                    }}
                     className="w-full bg-gaming-accent hover:bg-gaming-accent-hover text-gaming-card"
                   >
                     <Play className="h-5 w-5 mr-2" />
@@ -366,13 +396,60 @@ export default function TetrisGame() {
                 )}
 
                 <Button
-                  onClick={resetGame}
+                  onClick={() => {
+                    gameAudio.playSound('click');
+                    resetGame();
+                  }}
                   variant="outline"
                   className="w-full border-gaming-accent text-gaming-accent hover:bg-gaming-accent hover:text-gaming-card"
                 >
                   <RotateCcw className="h-5 w-5 mr-2" />
                   Reset Game
                 </Button>
+
+                {/* Mobile Controls */}
+                <div className="md:hidden space-y-3">
+                  <p className="text-sm text-muted-foreground text-center">Mobile Controls</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    <Button
+                      onClick={() => movePiece('left')}
+                      variant="outline"
+                      size="sm"
+                      className="border-gaming-accent text-gaming-accent"
+                      disabled={!isPlaying}
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      onClick={() => movePiece('rotate')}
+                      variant="outline"
+                      size="sm"
+                      className="border-gaming-accent text-gaming-accent"
+                      disabled={!isPlaying}
+                    >
+                      <RotateCw className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      onClick={() => movePiece('right')}
+                      variant="outline"
+                      size="sm"
+                      className="border-gaming-accent text-gaming-accent"
+                      disabled={!isPlaying}
+                    >
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <Button
+                    onClick={() => movePiece('down')}
+                    variant="outline"
+                    size="sm"
+                    className="w-full border-gaming-accent text-gaming-accent"
+                    disabled={!isPlaying}
+                  >
+                    <ArrowDown className="h-4 w-4 mr-2" />
+                    Drop
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
@@ -392,7 +469,10 @@ export default function TetrisGame() {
                     <div className="text-muted-foreground">Level {level}</div>
                   </div>
                   <Button
-                    onClick={resetGame}
+                    onClick={() => {
+                      gameAudio.playSound('click');
+                      resetGame();
+                    }}
                     className="bg-gaming-accent hover:bg-gaming-accent-hover text-gaming-card"
                   >
                     Play Again
@@ -411,6 +491,7 @@ export default function TetrisGame() {
                 <p>• Fill complete horizontal lines to clear them</p>
                 <p>• Game gets faster as level increases</p>
                 <p>• Game ends when pieces reach the top</p>
+                <p>• Use mobile controls on touch devices</p>
               </CardContent>
             </Card>
           </div>

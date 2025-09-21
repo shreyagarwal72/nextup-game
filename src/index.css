@@ -7,57 +7,68 @@
 
 @layer base {
   :root {
-    /* Gaming Dark Theme */
-    --background: 220 13% 7%;
-    --foreground: 210 40% 94%;
-    
-    --gaming-dark: 220 13% 12%;
-    --gaming-darker: 220 13% 8%;
-    --gaming-card: 220 13% 12%;
-    --gaming-accent: 188 86% 53%;
-    --gaming-accent-hover: 188 86% 43%;
-    --gaming-accent-glow: 188 86% 63%;
-    
-    --card: 220 13% 12%;
-    --card-foreground: 210 40% 94%;
-    
-    --popover: 220 13% 12%;
-    --popover-foreground: 210 40% 94%;
-    
-    --primary: 188 86% 53%;
-    --primary-foreground: 220 13% 7%;
-    
-    --secondary: 220 13% 18%;
-    --secondary-foreground: 210 40% 94%;
-    
-    --muted: 220 13% 15%;
-    --muted-foreground: 210 40% 70%;
-    
-    --accent: 188 86% 53%;
-    --accent-foreground: 220 13% 7%;
-    
+    --background: 217 9% 7%;
+    --foreground: 213 31% 91%;
+    --muted: 217 15% 15%;
+    --muted-foreground: 217 12% 62%;
+    --popover: 217 15% 11%;
+    --popover-foreground: 213 31% 91%;
+    --card: 217 13% 10%;
+    --card-foreground: 213 31% 91%;
+    --border: 217 15% 15%;
+    --input: 217 15% 15%;
+    --primary: 185 100% 39%;
+    --primary-foreground: 217 9% 7%;
+    --secondary: 217 15% 18%;
+    --secondary-foreground: 213 31% 91%;
+    --accent: 185 100% 39%;
+    --accent-foreground: 217 9% 7%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
+    --ring: 185 100% 39%;
+    --radius: 0.5rem;
     
-    --border: 220 13% 20%;
-    --input: 220 13% 15%;
-    --ring: 188 86% 53%;
+    /* Gaming specific colors */
+    --gaming-card: 217 13% 10%;
+    --gaming-accent: 185 100% 39%;
+    --gaming-accent-hover: 185 100% 32%;
+    --gaming-darker: 217 15% 8%;
+    --gradient-gaming: linear-gradient(135deg, hsl(185 100% 39%), hsl(200 100% 45%));
+    --shadow-gaming: 0 4px 20px hsl(185 100% 39% / 0.3);
+    --shadow-gaming-hover: 0 8px 25px hsl(185 100% 39% / 0.4);
+    --shadow-gaming-card: 0 2px 10px hsl(0 0% 0% / 0.3);
+  }
+
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --primary: 185 100% 39%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --accent: 185 100% 39%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --ring: 185 100% 39%;
     
-    --radius: 0.75rem;
-    
-    /* Gaming Gradients */
-    --gradient-gaming: linear-gradient(135deg, hsl(188 86% 53%), hsl(188 86% 63%));
-    --gradient-gaming-dark: linear-gradient(135deg, hsl(220 13% 12%), hsl(220 13% 18%));
-    --gradient-hero: linear-gradient(135deg, hsl(220 13% 7%), hsl(220 13% 12%));
-    
-    /* Gaming Shadows */
-    --shadow-gaming: 0 10px 30px -10px hsl(188 86% 53% / 0.3);
-    --shadow-gaming-hover: 0 20px 40px -10px hsl(188 86% 53% / 0.4);
-    --shadow-card: 0 4px 20px hsl(220 13% 5% / 0.5);
-    
-    /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    /* Gaming specific colors - light mode */
+    --gaming-card: 0 0% 100%;
+    --gaming-accent: 185 100% 39%;
+    --gaming-accent-hover: 185 100% 32%;
+    --gaming-darker: 210 40% 95%;
+    --gradient-gaming: linear-gradient(135deg, hsl(185 100% 39%), hsl(200 100% 45%));
+    --shadow-gaming: 0 4px 20px hsl(185 100% 39% / 0.2);
+    --shadow-gaming-hover: 0 8px 25px hsl(185 100% 39% / 0.3);
+    --shadow-gaming-card: 0 2px 10px hsl(0 0% 0% / 0.1);
   }
 }
 
@@ -98,12 +109,12 @@
   
   @keyframes glowText {
     from { text-shadow: 0 0 5px hsl(var(--gaming-accent)); }
-    to { text-shadow: 0 0 15px hsl(var(--gaming-accent-glow)); }
+    to { text-shadow: 0 0 15px hsl(var(--gaming-accent)); }
   }
   
   @keyframes pulse {
     0% { transform: scale(1); box-shadow: 0 0 8px hsl(var(--gaming-accent)); }
-    50% { transform: scale(1.08); box-shadow: 0 0 18px hsl(var(--gaming-accent-glow)); }
+    50% { transform: scale(1.08); box-shadow: 0 0 18px hsl(var(--gaming-accent)); }
     100% { transform: scale(1); box-shadow: 0 0 8px hsl(var(--gaming-accent)); }
   }
   
@@ -140,15 +151,5 @@
   
   .gaming-scale-in {
     animation: scaleIn 0.5s ease;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
   }
 }
