@@ -2,6 +2,8 @@ import GameLayout from "@/components/GameLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Award, Crown, Zap, Brain, Target, Puzzle, Dices } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getLeaderboard, getPlayerData } from "@/utils/gameStorage";
 
 const leaderboardData = [
   {
@@ -70,6 +72,13 @@ const globalLeaders = [
 ];
 
 export default function Leaderboard() {
+  const [leaderboard, setLeaderboard] = useState(getLeaderboard());
+  const [playerData] = useState(getPlayerData());
+
+  useEffect(() => {
+    setLeaderboard(getLeaderboard());
+  }, []);
+
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
@@ -119,29 +128,36 @@ export default function Leaderboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {globalLeaders.map((player) => (
-                <div
-                  key={player.rank}
-                  className="flex items-center justify-between p-4 bg-gaming-darker rounded-lg hover:bg-gaming-accent/10 transition-colors duration-300"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      {getRankIcon(player.rank)}
-                      <span className="text-2xl font-bold text-gaming-accent">#{player.rank}</span>
+              {leaderboard.length > 0 ? (
+                leaderboard.slice(0, 10).map((player, index) => (
+                  <div
+                    key={index}
+                    className={`flex items-center justify-between p-4 bg-gaming-darker rounded-lg hover:bg-gaming-accent/10 transition-colors duration-300 ${player.username === playerData.username ? 'ring-2 ring-gaming-accent' : ''}`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                        {getRankIcon(index + 1)}
+                        <span className="text-2xl font-bold text-gaming-accent">#{index + 1}</span>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-foreground">{player.username}</div>
+                        <div className="text-sm text-muted-foreground">{player.gamesPlayed} games played</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="font-semibold text-foreground">{player.name}</div>
-                      <div className="text-sm text-muted-foreground">{player.gamesWon} games won</div>
+                    <div className="text-right">
+                      <div className="text-xl font-bold text-gaming-accent">{player.totalScore.toLocaleString()}</div>
+                      <Badge className="bg-gaming-accent text-white">
+                        {player.totalScore > 10000 ? "Champion" : player.totalScore > 5000 ? "Pro" : "Player"}
+                      </Badge>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-xl font-bold text-gaming-accent">{player.totalScore.toLocaleString()}</div>
-                    <Badge className={`${getBadgeColor(player.badge)} text-white`}>
-                      {player.badge}
-                    </Badge>
-                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Trophy className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No scores yet. Be the first to play and set a record!</p>
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>

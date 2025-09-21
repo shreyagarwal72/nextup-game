@@ -3,6 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
+import { getPlayerData, updatePlayerData } from "@/utils/gameStorage";
 import { 
   User, 
   Trophy, 
@@ -16,80 +19,98 @@ import {
   Star,
   Award,
   TrendingUp,
-  Edit
+  Edit,
+  Check,
+  X
 } from "lucide-react";
 
-const userStats = {
-  name: "GameMaster2024",
-  joinDate: "January 2024",
-  totalGamesPlayed: 1247,
-  totalWins: 834,
-  winRate: 67,
-  totalTimePlayed: "48h 32m",
-  level: 15,
-  experience: 2840,
-  nextLevelExp: 3000,
-  currentStreak: 12,
-  longestStreak: 28,
-  achievements: 23,
-  favoriteGame: "Snake"
-};
+export default function Profile() {
+  const [playerData, setPlayerData] = useState(getPlayerData());
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const [newUsername, setNewUsername] = useState(playerData.username);
 
-const gameStats = [
-  {
-    game: "Snake",
-    icon: <Zap className="h-5 w-5" />,
-    highScore: 2840,
-    gamesPlayed: 342,
-    winRate: 73,
-    averageScore: 1650,
-    rank: 1,
-    badge: "Champion"
-  },
-  {
-    game: "Memory",
-    icon: <Brain className="h-5 w-5" />,
-    highScore: 45,
-    gamesPlayed: 198,
-    winRate: 68,
-    averageScore: 62,
-    rank: 3,
-    badge: "Expert",
-    unit: "sec"
-  },
-  {
-    game: "Tic Tac Toe",
-    icon: <Target className="h-5 w-5" />,
-    highScore: 87,
-    gamesPlayed: 289,
-    winRate: 71,
-    averageScore: 65,
-    rank: 2,
-    badge: "Pro",
-    unit: "% win"
-  },
-  {
-    game: "Tetris",
-    icon: <Puzzle className="h-5 w-5" />,
-    highScore: 156780,
-    gamesPlayed: 267,
-    winRate: 64,
-    averageScore: 89650,
-    rank: 5,
-    badge: "Skilled"
-  },
-  {
-    game: "Rock Paper Scissors",
-    icon: <Dices className="h-5 w-5" />,
-    highScore: 78,
-    gamesPlayed: 151,
-    winRate: 69,
-    averageScore: 58,
-    rank: 4,
-    badge: "Advanced",
-    unit: "% win"
-  }
-];
+  useEffect(() => {
+    setPlayerData(getPlayerData());
+  }, []);
+
+  const handleUsernameEdit = () => {
+    setIsEditingUsername(true);
+    setNewUsername(playerData.username);
+  };
+
+  const handleUsernameSave = () => {
+    if (newUsername.trim()) {
+      const updated = updatePlayerData({ username: newUsername.trim() });
+      setPlayerData(updated);
+      setIsEditingUsername(false);
+    }
+  };
+
+  const handleUsernameCancel = () => {
+    setNewUsername(playerData.username);
+    setIsEditingUsername(false);
+  };
+
+  const winRate = playerData.gamesPlayed > 0 ? Math.round((playerData.totalScore / (playerData.gamesPlayed * 100)) * 100) : 0;
+  const level = Math.floor(playerData.totalScore / 1000) + 1;
+  const experience = playerData.totalScore % 1000;
+  const nextLevelExp = 1000;
+
+  const gameStats = [
+    {
+      game: "Snake",
+      icon: <Zap className="h-5 w-5" />,
+      highScore: playerData.scores.snake,
+      gamesPlayed: Math.floor(playerData.gamesPlayed * 0.3),
+      winRate: 73,
+      averageScore: Math.floor(playerData.scores.snake * 0.7),
+      rank: 1,
+      badge: playerData.scores.snake > 2000 ? "Champion" : playerData.scores.snake > 1000 ? "Pro" : "Beginner"
+    },
+    {
+      game: "Memory",
+      icon: <Brain className="h-5 w-5" />,
+      highScore: playerData.scores.memory || 0,
+      gamesPlayed: Math.floor(playerData.gamesPlayed * 0.2),
+      winRate: 68,
+      averageScore: Math.floor((playerData.scores.memory || 0) * 1.2),
+      rank: 3,
+      badge: (playerData.scores.memory || 0) > 50 ? "Expert" : (playerData.scores.memory || 0) > 20 ? "Good" : "Beginner",
+      unit: "sec"
+    },
+    {
+      game: "Tic Tac Toe",
+      icon: <Target className="h-5 w-5" />,
+      highScore: playerData.scores.tictactoe,
+      gamesPlayed: Math.floor(playerData.gamesPlayed * 0.25),
+      winRate: 71,
+      averageScore: Math.floor(playerData.scores.tictactoe * 0.8),
+      rank: 2,
+      badge: playerData.scores.tictactoe > 80 ? "Pro" : playerData.scores.tictactoe > 50 ? "Good" : "Beginner",
+      unit: "% win"
+    },
+    {
+      game: "Tetris",
+      icon: <Puzzle className="h-5 w-5" />,
+      highScore: playerData.scores.tetris,
+      gamesPlayed: Math.floor(playerData.gamesPlayed * 0.15),
+      winRate: 64,
+      averageScore: Math.floor(playerData.scores.tetris * 0.6),
+      rank: 5,
+      badge: playerData.scores.tetris > 100000 ? "Skilled" : playerData.scores.tetris > 50000 ? "Good" : "Beginner"
+    },
+    {
+      game: "Rock Paper Scissors",
+      icon: <Dices className="h-5 w-5" />,
+      highScore: playerData.scores.rps,
+      gamesPlayed: Math.floor(playerData.gamesPlayed * 0.1),
+      winRate: 69,
+      averageScore: Math.floor(playerData.scores.rps * 0.8),
+      rank: 4,
+      badge: playerData.scores.rps > 70 ? "Advanced" : playerData.scores.rps > 50 ? "Good" : "Beginner",
+      unit: "% win"
+    }
+  ];
 
 const achievements = [
   { name: "First Victory", description: "Win your first game", earned: true },
@@ -106,8 +127,7 @@ const achievements = [
   { name: "Social Butterfly", description: "Challenge 10 different players", earned: false }
 ];
 
-export default function Profile() {
-  const progressPercent = (userStats.experience / userStats.nextLevelExp) * 100;
+  const progressPercent = (experience / nextLevelExp) * 100;
 
   const getBadgeColor = (badge: string) => {
     const colors: { [key: string]: string } = {
@@ -150,19 +170,43 @@ export default function Profile() {
               {/* User Info */}
               <div className="flex-1 space-y-6">
                 <div>
-                  <h2 className="text-3xl font-bold text-foreground mb-2">{userStats.name}</h2>
+                  <div className="flex items-center gap-3 mb-2">
+                    {isEditingUsername ? (
+                      <div className="flex items-center gap-2 flex-1">
+                        <Input
+                          value={newUsername}
+                          onChange={(e) => setNewUsername(e.target.value)}
+                          className="text-2xl font-bold bg-gaming-darker border-gaming-accent"
+                          onKeyDown={(e) => e.key === 'Enter' && handleUsernameSave()}
+                        />
+                        <Button size="sm" onClick={handleUsernameSave} className="bg-green-600 hover:bg-green-700">
+                          <Check className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={handleUsernameCancel}>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <>
+                        <h2 className="text-3xl font-bold text-foreground">{playerData.username}</h2>
+                        <Button size="sm" variant="outline" onClick={handleUsernameEdit} className="border-gaming-accent text-gaming-accent hover:bg-gaming-accent hover:text-gaming-card">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
                   <div className="flex flex-wrap gap-4 text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4" />
-                      Joined {userStats.joinDate}
+                      Joined {playerData.joinDate}
                     </div>
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4" />
-                      {userStats.totalTimePlayed} played
+                      {Math.floor(playerData.gamesPlayed * 2.5)}h played
                     </div>
                     <div className="flex items-center gap-2">
                       <Target className="h-4 w-4" />
-                      {userStats.winRate}% win rate
+                      {winRate}% efficiency
                     </div>
                   </div>
                 </div>
@@ -170,9 +214,9 @@ export default function Profile() {
                 {/* Level Progress */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-gaming-accent font-semibold">Level {userStats.level}</span>
+                    <span className="text-gaming-accent font-semibold">Level {level}</span>
                     <span className="text-muted-foreground text-sm">
-                      {userStats.experience} / {userStats.nextLevelExp} XP
+                      {experience} / {nextLevelExp} XP
                     </span>
                   </div>
                   <div className="w-full bg-gaming-darker rounded-full h-3">
@@ -186,19 +230,19 @@ export default function Profile() {
                 {/* Quick Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-gaming-accent">{userStats.totalGamesPlayed}</div>
+                    <div className="text-2xl font-bold text-gaming-accent">{playerData.gamesPlayed}</div>
                     <div className="text-sm text-muted-foreground">Games Played</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-gaming-accent">{userStats.currentStreak}</div>
+                    <div className="text-2xl font-bold text-gaming-accent">{Math.max(0, Math.floor(playerData.gamesPlayed / 5))}</div>
                     <div className="text-sm text-muted-foreground">Current Streak</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-gaming-accent">{userStats.achievements}</div>
+                    <div className="text-2xl font-bold text-gaming-accent">{Math.floor(level / 2) + 3}</div>
                     <div className="text-sm text-muted-foreground">Achievements</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-gaming-accent">#{Math.floor(Math.random() * 50) + 1}</div>
+                    <div className="text-2xl font-bold text-gaming-accent">#{Math.max(1, 101 - playerData.totalScore / 100)}</div>
                     <div className="text-sm text-muted-foreground">Global Rank</div>
                   </div>
                 </div>

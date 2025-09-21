@@ -150,6 +150,13 @@ const Index = () => {
             </div>
           </div>
         </section>
+
+        {/* Copyright Footer */}
+        <footer className="text-center py-8 border-t border-gaming-accent/20">
+          <p className="text-muted-foreground">
+            © 2025 Copyright Nextup Studio. All rights reserved.
+          </p>
+        </footer>
       </div>
     </GameLayout>
   );
