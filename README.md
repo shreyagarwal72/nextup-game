@@ -127,9 +127,9 @@ or any other static hosting platform.
 GameZone Team
 Created with ❤️ for gamers around the world.
 
-🔗 Website: GameZone Official
-🐦 Twitter: @lovable_dev
-📧 Contact: gamezone@support.com
+🔗 Website: Nextup Studio 
+🐦 Instagram : @vanshu_ag_72
+📧 Contact: sanjayvansu1973@gmail.com
 
 
 ---
