@@ -1,29 +1,101 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <!-- ---------- BASIC ---------- -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <!-- Google Site Verification -->
-    <meta name="google-site-verification" content="KYowygvsrbCJwszF1adTZ1WltiKdP6Mvx_YMChVKKBQ" />
+  <!-- ---------- VERIFICATION ---------- -->
+  <meta name="google-site-verification" content="KYowygvsrbCJwszF1adTZ1WltiKdP6Mvx_YMChVKKBQ">
 
-    <title>GameZone - Play Classic Games Online</title>
-    <meta name="description" content="Experience the ultimate collection of classic games with modern design. Play Snake, Tetris, Memory, Tic Tac Toe, and more!" />
-    <meta name="author" content="GameZone" />
-    <meta name="keywords" content="games, online games, snake, tetris, memory game, tic tac toe, rock paper scissors, classic games, browser games" />
+  <!-- ---------- PRIMARY SEO ---------- -->
+  <title>GameZone - Play Classic Games Online</title>
+  <meta name="description" content="Experience the ultimate collection of classic games with modern design. Play Snake, Tetris, Memory, Tic Tac Toe, and more!">
+  <meta name="author" content="GameZone">
+  <meta name="keywords" content="games, online games, snake, tetris, memory game, tic tac toe, rock paper scissors, classic games, browser games">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large">
+  <link rel="canonical" href="https://gamezone.vercel.app/">
 
-    <meta property="og:title" content="GameZone - Play Classic Games Online" />
-    <meta property="og:description" content="Experience the ultimate collection of classic games with modern design. Play Snake, Tetris, Memory, Tic Tac Toe, and more!" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+  <!-- ---------- OPEN GRAPH / TWITTER ---------- -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="GameZone - Play Classic Games Online">
+  <meta property="og:description" content="Experience the ultimate collection of classic games with modern design. Play Snake, Tetris, Memory, Tic Tac Toe, and more!">
+  <meta property="og:url" content="https://gamezone.vercel.app/">
+  <meta property="og:image" content="https://gamezone.vercel.app/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="GameZone - Classic Games Hub">
+  <meta property="og:site_name" content="GameZone">
+  <meta property="og:locale" content="en_US">
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@GameZone">
+  <meta name="twitter:creator" content="@GameZone">
+  <meta name="twitter:title" content="GameZone - Play Classic Games Online">
+  <meta name="twitter:description" content="Play Snake, Tetris, Memory, Tic Tac Toe and more in your browser.">
+  <meta name="twitter:image" content="https://gamezone.vercel.app/og-image.jpg">
+  <meta name="twitter:image:alt" content="GameZone - Classic Games Hub">
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <!-- ---------- FAVICONS – FIXED ---------- -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="msapplication-TileColor" content="#2d2d2d">
+  <meta name="msapplication-config" content="/browserconfig.xml">
+  <meta name="theme-color" content="#2d2d2d">
+
+  <!-- ---------- PERFORMANCE ---------- -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+
+  <!-- ---------- STRUCTURED DATA ---------- -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "GameZone",
+    "description": "Play classic games online for free: Snake, Tetris, Memory, Tic Tac Toe and more.",
+    "url": "https://gamezone.vercel.app/",
+    "image": "https://gamezone.vercel.app/og-image.jpg",
+    "author": {
+      "@type": "Organization",
+      "name": "GameZone",
+      "url": "https://gamezone.vercel.app/"
+    },
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": [
+        {
+          "@type": "Game",
+          "name": "Snake",
+          "description": "Classic snake game with smooth controls"
+        },
+        {
+          "@type": "Game",
+          "name": "Tetris",
+          "description": "Iconic block-stacking puzzle"
+        },
+        {
+          "@type": "Game",
+          "name": "Memory Match",
+          "description": "Flip cards and match pairs"
+        },
+        {
+          "@type": "Game",
+          "name": "Tic Tac Toe",
+          "description": "Noughts and crosses for two players"
+        }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
 </html>
